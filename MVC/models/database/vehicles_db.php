@@ -9,7 +9,7 @@ class Vehicles_DB implements VehiclesDBInterface
     private string $host_db = "localhost";
     private string $user_db = "root";
     private string $pwd_db = "";
-    private string $name_db = "estudiantes_db";
+    private string $name_db = "alquiler_vehiculos_db";
     private int $port_db = 3306;
 
     private $conex = null;

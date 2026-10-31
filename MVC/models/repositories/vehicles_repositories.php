@@ -7,7 +7,7 @@ use app\models\entities\Vehicles;
 use app\models\mappers\VehiclesMappers;
 use Exception;
 
-class StudentsRepository implements VehiclesRepositoryInterface
+class VehiclesRepository implements VehiclesRepositoryInterface
 {
     private VehiclesDBInterface $vehicles_db;
 
