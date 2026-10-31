@@ -32,17 +32,18 @@ class VehiclesController implements VehiclesControllerInterface
 
     public function get_vehicle(int $id): Vehicles
     {
-        if(empty($id)){
+        if (empty($id)) {
             throw new Exception("id incorrecto", 1);
         }
-        $vehicle = $this->vehicle_model->find_vehicle_by_id($id);
-        if(empty($vehicle)){
+        $vehicle = $this->vehicles_model->find_vehicles_by_id($id);
+        if (empty($vehicle)) {
             throw new Exception("Id:$id no existe", 2);
         }
         return $vehicle;
     }
 
-    public function vehicles_update(array $post_data): bool{
+    public function vehicle_update(array $post_data): bool
+    {
         $datos_form = VehiclesControllerMappers::to_entity($post_data);;
         $vehicles = $this->vehicles_model->save_vehicles($datos_form);
         return !empty($vehicles);

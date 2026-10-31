@@ -40,7 +40,8 @@ class Vehicles_DB implements VehiclesDBInterface
         return $rows;
     }
 
-    public function exc_query($sql): bool{
+    public function exc_query($sql): bool
+    {
         $result = $this->conex->query($sql);
         $this->conex->close();
         return $result;

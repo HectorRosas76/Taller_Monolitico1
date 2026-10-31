@@ -1,6 +1,19 @@
 <?php
+require "../../models/entities/vehicles.php";
+require "../../models/mappers/vehicles_mappers.php";
+require "../../models/database/vehicles_db_interface.php";
+require "../../models/database/vehicles_db.php";
+require "../../models/repositories/vehicles_repository_interface.php";
+require "../../models/repositories/vehicles_repository.php";
+require "../../models/config/models_config.php";
+require "../../controllers/mappers/vehicles_mappers.php";
+require "../../controllers/vehicles/vehicles_controller_interface.php";
+require "../../controllers/vehicles/vehicles_controller.php";
+require "../../controllers/config/controllers_config.php";
 
-$controller = ControllersConfig :: get_vehicles_controller();
+use app\controllers\config\ControllersConfig;
+
+$controller = ControllersConfig::get_vehicles_controller();
 $list = $controller->get_vehicles();
 ?>
 
@@ -88,9 +101,9 @@ $list = $controller->get_vehicles();
                     </thead>
                     <tbody>
                         <tr>
-                            <!-- <?php if (count() === 0): 
-                          echo '  <td colspan="5"> No hay vehiculos registrados. </td>';
-                        endif; ?> -->
+                            <!-- <?php if (count($list) === 0):
+                                        echo '  <td colspan="5"> No hay vehiculos registrados. </td>';
+                                    endif; ?> -->
                         </tr>
                         <?php
                         foreach ($list as $item) {
