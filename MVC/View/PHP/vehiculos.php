@@ -1,3 +1,9 @@
+<?php
+
+$controller = ControllersConfig :: get_vehicles_controller();
+$list = $controller->get_vehicles();
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -49,43 +55,18 @@
             </a>
         </div>
     </nav>
-    <div class="page-container">
-        <header class="page-header">
-            <h1>Gestión de Vehiculos</h1>
-            <p>Busca, crea, edita y elimina vehiculos con datos completos y adecuados.</p>
-        </header>
 
+    <div class="page-container">
+        <section>
+            <h2>Registrar Vehículo</h2>
+            <a href="../actions/create/register_vehicles.php">
+                Registrar Vehículo
+            </a>
+        </section>
         <section class="list-controls">
-            <form method="get" action="sprints.php" class="search-form">
+            <form method="get" action="" class="search-form">
                 <input type="text" name="search" placeholder="Buscar por nombre..." value="">
                 <button type="submit">Buscar</button>
-            </form>
-            <div class="list-summary">
-
-        </section>
-
-        <section class="form-panel">
-            <h2></h2>
-            <form method="post" action="sprints.php" class="crud-form">
-                <input type="hidden" name="action" value="update">
-                <input type="hidden" name="id" value="">
-                <input type="hidden" name="action" value="create">
-                <input type="hidden" name="search" value="">
-                <input type="hidden" name="page" value="">
-
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre" required value="">
-
-                <label for="fecha_inicio">Fecha inicio</label>
-                <input type="date" id="fecha_inicio" name="fecha_inicio" required value="">
-
-                <label for="fecha_fin">Fecha fin</label>
-                <input type="date" id="fecha_fin" name="fecha_fin" required value="">
-
-                <div class="form-actions">
-                    <button type="submit"></button>
-                    <a class="secondary-link" href="sprints.php">Cancelar</a>
-                </div>
             </form>
         </section>
 
@@ -102,38 +83,52 @@
                             <th>N° Licencia</th>
                             <th>Fecha inicio</th>
                             <th>Fecha fin</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="5">No hay vehiculos registrados.</td>
+                            <!-- <?php if (count() === 0): 
+                          echo '  <td colspan="5"> No hay vehiculos registrados. </td>';
+                        endif; ?> -->
                         </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="actions">
-                                <a class="action-link" href="sprints.php?edit_id=&page=">Editar</a>
-                                <form method="post" action="sprints.php" class="inline-form" onsubmit="return confirm('¿Eliminar este sprint?');">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="">
-                                    <input type="hidden" name="search" value="">
-                                    <input type="hidden" name="page" value="">
-                                    <button type="submit">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-
+                        <?php
+                        foreach ($list as $item) {
+                            $id = $item->get_id();
+                            echo '<div class="tarjeta">';
+                            echo '    <p> ';
+                            echo '        <b>Codigo: </b><span>' . $item->get_code() . '</span> ';
+                            echo '    </p>';
+                            echo '    <p> ';
+                            echo '        <b>Marca: </b><span>' . $item->get_marca() . '</span> ';
+                            echo '    </p>';
+                            echo '    <p> ';
+                            echo '        <b>Email: </b><span>' . $item->get_model() . '</span> ';
+                            echo '    </p>';
+                            echo '    <p> ';
+                            echo '        <b>Licencia: </b><span>' . $item->get_anio() . '</span> ';
+                            echo '    </p>';
+                            echo '    <p> ';
+                            echo '        <b>Categoria: </b><span>' . $item->get_categoria() . '</span> ';
+                            echo '    </p>';
+                            echo '    <p> ';
+                            echo '        <b>Estado: </b><span>' . $item->get_estado() . '</span> ';
+                            echo '    </p>';
+                            echo '    <p> ';
+                            echo '        <b>Fecha inicio: </b><span>' . $item->get_start_date() . '</span> ';
+                            echo '    </p>';
+                            echo '    <p> ';
+                            echo '        <b>Fecha fin: </b><span>' . $item->get_end_date() . '</span> ';
+                            echo '    </p>';
+                            echo '    <div>';
+                            echo '        <a href="#">Borrar</a>';
+                            echo '        <a href="formularioVehiculos.php?id=' . $id . '">Modificar</a>';
+                            echo '    </div>';
+                            echo '</div>';
+                        }
+                        ?>
                     </tbody>
                 </table>
-            </div>
-
-
-            <div class="pagination">
-                <a href="sprints.php?page=">« Anterior</a>
-                <span>Página de</span>
-                <a href="sprints.php?page=">Siguiente »</a>
             </div>
         </section>
     </div>
