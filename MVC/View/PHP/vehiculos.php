@@ -53,16 +53,6 @@ $list = $controller->get_vehicles();
             </a>
         </div>
         <div class="menu-item">
-            <a href="devoluciones.php">
-                Devoluciones
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="historial.php">
-                Historial
-            </a>
-        </div>
-        <div class="menu-item">
             <a href="disponibilidad.php">
                 Disponibilidad
             </a>
@@ -70,78 +60,70 @@ $list = $controller->get_vehicles();
     </nav>
 
     <div class="page-container">
-        <section>
-            <h2>Registrar Vehículo</h2>
-            <a href="../actions/create/register_vehicles.php">
-                Registrar Vehículo
+        <section class="header-section">
+            <h1>Vehículos</h1>
+            <a class="btn btn-primary" href="../actions/vehicles/formularioVehiculos.php">
+                + Registrar Vehículo
             </a>
         </section>
+
         <section class="list-controls">
+            <h2>Buscar por nombre</h2>
             <form method="get" action="" class="search-form">
-                <input type="text" name="search" placeholder="Buscar por nombre..." value="">
-                <button type="submit">Buscar</button>
+                <input type="text" name="search" placeholder="Buscar por marca o modelo..."
+                    value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+                <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
         </section>
 
-        <section class="table-panel">
-            <h2>Lista de Vehiculos</h2>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Telefono</th>
-                            <th>Correo</th>
-                            <th>N° Licencia</th>
-                            <th>Fecha inicio</th>
-                            <th>Fecha fin</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <!-- <?php if (count($list) === 0):
-                                        echo '  <td colspan="5"> No hay vehiculos registrados. </td>';
-                                    endif; ?> -->
-                        </tr>
-                        <?php
-                        foreach ($list as $item) {
-                            $id = $item->get_id();
-                            echo '<div class="tarjeta">';
-                            echo '    <p> ';
-                            echo '        <b>Codigo: </b><span>' . $item->get_code() . '</span> ';
-                            echo '    </p>';
-                            echo '    <p> ';
-                            echo '        <b>Marca: </b><span>' . $item->get_marca() . '</span> ';
-                            echo '    </p>';
-                            echo '    <p> ';
-                            echo '        <b>Email: </b><span>' . $item->get_model() . '</span> ';
-                            echo '    </p>';
-                            echo '    <p> ';
-                            echo '        <b>Licencia: </b><span>' . $item->get_anio() . '</span> ';
-                            echo '    </p>';
-                            echo '    <p> ';
-                            echo '        <b>Categoria: </b><span>' . $item->get_categoria() . '</span> ';
-                            echo '    </p>';
-                            echo '    <p> ';
-                            echo '        <b>Estado: </b><span>' . $item->get_estado() . '</span> ';
-                            echo '    </p>';
-                            echo '    <p> ';
-                            echo '        <b>Fecha inicio: </b><span>' . $item->get_start_date() . '</span> ';
-                            echo '    </p>';
-                            echo '    <p> ';
-                            echo '        <b>Fecha fin: </b><span>' . $item->get_end_date() . '</span> ';
-                            echo '    </p>';
-                            echo '    <div>';
-                            echo '        <a href="#">Borrar</a>';
-                            echo '        <a href="formularioVehiculos.php?id=' . $id . '">Modificar</a>';
-                            echo '    </div>';
-                            echo '</div>';
-                        }
-                        ?>
-                    </tbody>
-                </table>
+        <section class="grid-panel">
+            <h2>Lista de Vehículos</h2>
+
+            <div class="grid-wrapper">
+                <!-- Encabezados -->
+                <div class="grid-row grid-head">
+                    <div class="grid-cell">Código</div>
+                    <div class="grid-cell">Marca</div>
+                    <div class="grid-cell">Modelo</div>
+                    <div class="grid-cell">Año</div>
+                    <div class="grid-cell">Categoría</div>
+                    <div class="grid-cell">Estado</div>
+                    <div class="grid-cell">Acciones</div>
+                </div>
+
+                <?php if (count($list) === 0): ?>
+                    <div class="grid-empty">No hay vehículos registrados.</div>
+                <?php endif; ?>
+
+                <?php foreach ($list as $item):
+                    $id = $item->get_id();
+                    $estado = $item->get_estado();
+                ?>
+                    <div class="grid-row">
+                        <div class="grid-cell" data-label="Código">
+                            <?= htmlspecialchars($item->get_id()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Marca">
+                            <?= htmlspecialchars($item->get_marca()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Modelo">
+                            <?= htmlspecialchars($item->get_model()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Año">
+                            <?= htmlspecialchars($item->get_anio()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Categoría">
+                            <?= htmlspecialchars($item->get_categoria()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Estado">
+                            <span class="badge"><?= htmlspecialchars($estado) ?></span>
+                        </div>
+                        <div class="grid-cell grid-actions" data-label="Acciones">
+                            <a class="btn btn-edit" href="../actions/vehicles/formularioVehiculos.php?id=<?= $item->get_id() ?>">Modificar</a>
+                            <a class="btn btn-delete" href="#">Borrar</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </section>
     </div>

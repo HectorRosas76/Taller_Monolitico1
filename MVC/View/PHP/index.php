@@ -35,16 +35,6 @@
       </a>
     </div>
     <div class="menu-item">
-      <a href="#devoluciones">
-        Devoluciones
-      </a>
-    </div>
-    <div class="menu-item">
-      <a href="#historial">
-        Historial
-      </a>
-    </div>
-    <div class="menu-item">
       <a href="#disponibilidad">
         Disponibilidad
       </a>
@@ -71,14 +61,6 @@
       <a id="reservas" class="menu-card" href="reservas.php">
         <h2>Crear Reservas</h2>
         <p>Registra nuevas reservas y gestiona las existentes.</p>
-      </a>
-      <a id="devoluciones" class="menu-card" href="devoluciones.php">
-        <h2>Recibir Devoluciones</h2>
-        <p>Registra la entrega y actualiza el estado del vehículo.</p>
-      </a>
-      <a id="historial" class="menu-card" href="historial.php">
-        <h2>Ver Historial</h2>
-        <p>Consulta el historial de reservas y devoluciones.</p>
       </a>
       <a id="disponibilidad" class="menu-card" href="disponibilidad.php">
         <h2>Ver Disponibilidad</h2>

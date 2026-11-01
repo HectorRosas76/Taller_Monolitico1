@@ -29,8 +29,8 @@ class VehiclesRepository implements VehiclesRepositoryInterface
 
     public function save_new_vehicles(Vehicles $vehicles): bool
     {
-        $sql = "insert into vehiculos(marca,modelo,anio, categoria, estado, fecha_inicio, fecha_fin)values";
-        $sql .= "('" . $vehicles->get_marca() . "','" . $vehicles->get_model() . "','" . $vehicles->get_anio() . "','" . $vehicles->get_categoria() . "','" . $vehicles->get_estado() . "','" . $vehicles->get_start_date() . "','" . $vehicles->get_end_date() . "')";
+        $sql = "insert into vehiculos(marca,modelo,anio, categoria, estado)values";
+        $sql .= "('" . $vehicles->get_marca() . "','" . $vehicles->get_model() . "','" . $vehicles->get_anio() . "','" . $vehicles->get_categoria() . "','" . $vehicles->get_estado() . "')";
         $result = $this->vehicles_db->exc_query($sql);
         return $result;
     }
@@ -50,11 +50,9 @@ class VehiclesRepository implements VehiclesRepositoryInterface
         $sql = "update vehiculos set ";
         $sql .= " marca='" . $vehicles->get_marca() . "', ";
         $sql .= " modelo='" . $vehicles->get_model() . "', ";
-        $sql .= " anio='" . $vehicles->get_anio() . "' ";
+        $sql .= " anio='" . $vehicles->get_anio() . "', ";
         $sql .= " categoria='" . $vehicles->get_categoria() . "', ";
-        $sql .= " estado='" . $vehicles->get_estado() . "', ";
-        $sql .= " fecha_inicio='" . $vehicles->get_start_date() . "' ";
-        $sql .= " fecha_fin='" . $vehicles->get_end_date() . "' ";
+        $sql .= " estado='" . $vehicles->get_estado() . "' ";
         $sql .= " where id=" . $vehicles->get_id();
         return $this->vehicles_db->exc_query($sql);
     }

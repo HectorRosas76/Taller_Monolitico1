@@ -15,8 +15,6 @@ class VehiclesMappers
             $row_db["anio"],
             $row_db["categoria"],
             $row_db["estado"],
-            $row_db["fecha_inicio"],
-            $row_db["fecha_fin"]
         );
     }
 }

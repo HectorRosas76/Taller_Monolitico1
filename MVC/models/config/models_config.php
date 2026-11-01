@@ -19,3 +19,5 @@ class ModelsConfig
         return new VehiclesRepository(ModelsConfig::get_Vehicles_db());
     }
 }
+
+const ESTADOS_VEHICULO = ['disponible', 'alquilado', 'mantenimiento'];

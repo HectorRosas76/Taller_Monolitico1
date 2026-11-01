@@ -14,9 +14,7 @@ class VehiclesControllerMappers
             $request["modelo"],
             $request["anio"],
             $request["categoria"],
-            $request["estado"],
-            $request["fecha_inicio"],
-            $request["fecha_fin"],
+            $request["estado"]
         );
     }
 }

@@ -20,8 +20,6 @@ class Vehicles
         string $anio,
         string $categoria,
         string $estado,
-        string $fecha_inicio,
-        string $fecha_fin
     ) {
         $this->id = $id;
         $this->marca = $marca;
@@ -29,8 +27,6 @@ class Vehicles
         $this->anio = $anio;
         $this->categoria = $categoria;
         $this->estado = $estado;
-        $this->fecha_inicio = $fecha_inicio;
-        $this->fecha_fin = $fecha_fin;
     }
 
     public function get_id(): int
@@ -56,13 +52,5 @@ class Vehicles
     public function get_estado(): string
     {
         return $this->estado;
-    }
-    public function get_start_date(): string
-    {
-        return $this->fecha_inicio;
-    }
-    public function get_end_date(): string
-    {
-        return $this->fecha_fin;
     }
 }
