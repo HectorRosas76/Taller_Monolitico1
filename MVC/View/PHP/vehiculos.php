@@ -1,3 +1,22 @@
+<?php
+require "../../models/entities/vehicles.php";
+require "../../models/mappers/vehicles_mappers.php";
+require "../../models/database/vehicles_db_interface.php";
+require "../../models/database/vehicles_db.php";
+require "../../models/repositories/vehicles_repository_interface.php";
+require "../../models/repositories/vehicles_repository.php";
+require "../../models/config/models_config.php";
+require "../../controllers/mappers/vehicles_mappers.php";
+require "../../controllers/vehicles/vehicles_controller_interface.php";
+require "../../controllers/vehicles/vehicles_controller.php";
+require "../../controllers/config/controllers_config.php";
+
+use app\controllers\config\ControllersConfig;
+
+$controller = ControllersConfig::get_vehicles_controller();
+$list = $controller->get_vehicles();
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -34,106 +53,77 @@
             </a>
         </div>
         <div class="menu-item">
-            <a href="devoluciones.php">
-                Devoluciones
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="historial.php">
-                Historial
-            </a>
-        </div>
-        <div class="menu-item">
             <a href="disponibilidad.php">
                 Disponibilidad
             </a>
         </div>
     </nav>
+
     <div class="page-container">
-        <header class="page-header">
-            <h1>Gestión de Vehiculos</h1>
-            <p>Busca, crea, edita y elimina vehiculos con datos completos y adecuados.</p>
-        </header>
+        <section class="header-section">
+            <h1>Vehículos</h1>
+            <a class="btn btn-primary" href="../actions/vehicles/formularioVehiculos.php">
+                + Registrar Vehículo
+            </a>
+        </section>
 
         <section class="list-controls">
-            <form method="get" action="sprints.php" class="search-form">
-                <input type="text" name="search" placeholder="Buscar por nombre..." value="">
-                <button type="submit">Buscar</button>
+            <h2>Buscar por nombre</h2>
+            <form method="get" action="" class="search-form">
+                <input type="text" name="search" placeholder="Buscar por marca o modelo..."
+                    value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+                <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
-            <div class="list-summary">
-
         </section>
 
-        <section class="form-panel">
-            <h2></h2>
-            <form method="post" action="sprints.php" class="crud-form">
-                <input type="hidden" name="action" value="update">
-                <input type="hidden" name="id" value="">
-                <input type="hidden" name="action" value="create">
-                <input type="hidden" name="search" value="">
-                <input type="hidden" name="page" value="">
+        <section class="grid-panel">
+            <h2>Lista de Vehículos</h2>
 
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre" required value="">
-
-                <label for="fecha_inicio">Fecha inicio</label>
-                <input type="date" id="fecha_inicio" name="fecha_inicio" required value="">
-
-                <label for="fecha_fin">Fecha fin</label>
-                <input type="date" id="fecha_fin" name="fecha_fin" required value="">
-
-                <div class="form-actions">
-                    <button type="submit"></button>
-                    <a class="secondary-link" href="sprints.php">Cancelar</a>
+            <div class="grid-wrapper">
+                <!-- Encabezados -->
+                <div class="grid-row grid-head">
+                    <div class="grid-cell">Código</div>
+                    <div class="grid-cell">Marca</div>
+                    <div class="grid-cell">Modelo</div>
+                    <div class="grid-cell">Año</div>
+                    <div class="grid-cell">Categoría</div>
+                    <div class="grid-cell">Estado</div>
+                    <div class="grid-cell">Acciones</div>
                 </div>
-            </form>
-        </section>
 
-        <section class="table-panel">
-            <h2>Lista de Vehiculos</h2>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Telefono</th>
-                            <th>Correo</th>
-                            <th>N° Licencia</th>
-                            <th>Fecha inicio</th>
-                            <th>Fecha fin</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="5">No hay vehiculos registrados.</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="actions">
-                                <a class="action-link" href="sprints.php?edit_id=&page=">Editar</a>
-                                <form method="post" action="sprints.php" class="inline-form" onsubmit="return confirm('¿Eliminar este sprint?');">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="">
-                                    <input type="hidden" name="search" value="">
-                                    <input type="hidden" name="page" value="">
-                                    <button type="submit">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
+                <?php if (count($list) === 0): ?>
+                    <div class="grid-empty">No hay vehículos registrados.</div>
+                <?php endif; ?>
 
-                    </tbody>
-                </table>
-            </div>
-
-
-            <div class="pagination">
-                <a href="sprints.php?page=">« Anterior</a>
-                <span>Página de</span>
-                <a href="sprints.php?page=">Siguiente »</a>
+                <?php foreach ($list as $item):
+                    $id = $item->get_id();
+                    $estado = $item->get_estado();
+                ?>
+                    <div class="grid-row">
+                        <div class="grid-cell" data-label="Código">
+                            <?= htmlspecialchars($item->get_id()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Marca">
+                            <?= htmlspecialchars($item->get_marca()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Modelo">
+                            <?= htmlspecialchars($item->get_model()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Año">
+                            <?= htmlspecialchars($item->get_anio()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Categoría">
+                            <?= htmlspecialchars($item->get_categoria()) ?>
+                        </div>
+                        <div class="grid-cell" data-label="Estado">
+                            <span class="badge"><?= htmlspecialchars($estado) ?></span>
+                        </div>
+                        <div class="grid-cell grid-actions" data-label="Acciones">
+                            <a class="btn btn-edit" href="../actions/vehicles/formularioVehiculos.php?id=<?= $item->get_id() ?>">Modificar</a>
+                            <a class="btn btn-delete" href="#">Borrar</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </section>
     </div>
