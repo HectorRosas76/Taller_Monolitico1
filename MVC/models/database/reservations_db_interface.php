@@ -1,0 +1,9 @@
+<?php
+
+namespace app\models\database;
+
+interface ReservationsDBInterface
+{
+    public function exc_select($sql): array;
+    public function exc_query($sql): bool;
+}
