@@ -40,10 +40,16 @@ class Reservations_DB implements ReservationsDBInterface
         return $rows;
     }
 
-    public function exc_query($sql): bool
-    {
-        $result = $this->conex->query($sql);
+  public function exc_query($sql): bool
+{
+    try {
+        return (bool) $this->conex->query($sql);
+    } catch (\mysqli_sql_exception $e) {
+        return false;
+    } finally {
         $this->conex->close();
-        return $result;
     }
+}
+
+    
 }

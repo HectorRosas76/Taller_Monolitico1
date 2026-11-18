@@ -56,4 +56,9 @@ class VehiclesRepository implements VehiclesRepositoryInterface
         $sql .= " where id=" . $vehicles->get_id();
         return $this->vehicles_db->exc_query($sql);
     }
+         public function delete_vehicles(int $id): bool
+    {
+        $sql = "delete from vehiculos where id=$id";
+        return $this->vehicles_db->exc_query($sql);
+    }
 }

@@ -48,4 +48,12 @@ class VehiclesController implements VehiclesControllerInterface
         $vehicles = $this->vehicles_model->save_vehicles($datos_form);
         return !empty($vehicles);
     }
+    
+              public function vehicle_delete(int $id): bool
+    {
+        if (empty($id)) {
+            throw new Exception("id incorrecto", 1);
+        }
+        return $this->vehicles_model->delete_vehicles($id);
+    }
 }

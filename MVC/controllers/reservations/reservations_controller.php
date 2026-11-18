@@ -48,4 +48,12 @@ class ReservationsController implements ReservationsControllerInterface
         $reservations = $this->reservationsRepositoryInterface_model->save_reservations($datos_form);
         return !empty($reservations);
     }
+
+          public function reservation_delete(int $id): bool
+    {
+        if (empty($id)) {
+            throw new Exception("id incorrecto", 1);
+        }
+        return $this->reservationsRepositoryInterface_model->delete_reservations($id);
+    }
 }

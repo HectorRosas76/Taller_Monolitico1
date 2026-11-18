@@ -44,7 +44,7 @@ $success = $controller->reservation_update($_POST);
     }
     ?>
     <br>
-    <a href="../../php/vehiculos.php">Volver</a>
+    <a href="../../php/reservas.php">Volver</a>
 </body>
 
 </html>

@@ -56,4 +56,9 @@ class ReservationsRepository implements ReservationsRepositoryInterface
         $sql .= " where id=" . $reservations->get_id();
         return $this->reservations_db->exc_query($sql);
     }
+     public function delete_reservations(int $id): bool
+    {
+        $sql = "delete from reservas where id=$id";
+        return $this->reservations_db->exc_query($sql);
+    }
 }

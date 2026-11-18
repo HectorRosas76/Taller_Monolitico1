@@ -1,21 +1,56 @@
 <?php
+// Reservas
 require "../../models/entities/reservations.php";
 require "../../models/mappers/reservations_mappers.php";
 require "../../models/database/reservations_db_interface.php";
 require "../../models/database/reservations_db.php";
 require "../../models/repositories/reservations_repository_interface.php";
 require "../../models/repositories/reservations_repository.php";
-require "../../models/config/models_config.php";
 require "../../controllers/mappers/reservations_mappers.php";
 require "../../controllers/reservations/reservations_controller_interface.php";
 require "../../controllers/reservations/reservations_controller.php";
-require "../../controllers/config/controllers_config.php";
 
+// Clientes
+require "../../models/entities/clients.php";
+require "../../models/mappers/clients_mappers.php";
+require "../../models/database/clients_db_interface.php";
+require "../../models/database/clients_db.php";
+require "../../models/repositories/clients_repository_interface.php";
+require "../../models/repositories/clients_repository.php";
+require "../../controllers/mappers/clients_mappers.php";
+require "../../controllers/clients/clients_controller_interface.php";
+require "../../controllers/clients/clients_controller.php";
+
+// Vehículos
+require "../../models/entities/vehicles.php";
+require "../../models/mappers/vehicles_mappers.php";
+require "../../models/database/vehicles_db_interface.php";
+require "../../models/database/vehicles_db.php";
+require "../../models/repositories/vehicles_repository_interface.php";
+require "../../models/repositories/vehicles_repository.php";
+require "../../controllers/mappers/vehicles_mappers.php";
+require "../../controllers/vehicles/vehicles_controller_interface.php";
+require "../../controllers/vehicles/vehicles_controller.php";
+
+// Configuración
+require "../../models/config/models_config.php";
+require "../../controllers/config/controllers_config.php";
 
 use app\controllers\config\ControllersConfig;
 
 $controller = ControllersConfig::get_reservations_controller();
 $list = $controller->get_reservations();
+
+// ID => nombre, para mostrar nombres en lugar de IDs
+$clients_names = [];
+foreach (ControllersConfig::get_clients_controller()->get_clients() as $c) {
+    $clients_names[$c->get_id()] = $c->get_name();
+}
+
+$vehicles_names = [];
+foreach (ControllersConfig::get_vehicles_controller()->get_vehicles() as $v) {
+    $vehicles_names[$v->get_id()] = $v->get_marca() . ' ' . $v->get_model();
+}
 ?>
 
 <!DOCTYPE html>
@@ -98,30 +133,34 @@ $list = $controller->get_reservations();
 
                 <?php foreach ($list as $item):
                     $id = $item->get_id();
-                    $estado = $item->get_estado();
+                    $estado = $item->get_status();
                 ?>
                     <div class="grid-row">
                         <div class="grid-cell" data-label="Código">
                             <?= htmlspecialchars($item->get_id()) ?>
                         </div>
                         <div class="grid-cell" data-label="Cliente">
-                            <?= htmlspecialchars($item->get_client_id()) ?>
-                        </div>
-                        <div class="grid-cell" data-label="Vehículo">
-                            <?= htmlspecialchars($item->get_vehicle_id()) ?>
-                        </div>
+    <?= htmlspecialchars($clients_names[$item->get_client_id()] ?? 'ID ' . $item->get_client_id()) ?>
+</div>
+<div class="grid-cell" data-label="Vehículo">
+    <?= htmlspecialchars($vehicles_names[$item->get_vehicle_id()] ?? 'ID ' . $item->get_vehicle_id()) ?>
+</div>
                         <div class="grid-cell" data-label="Fecha Inicio">
-                            <?= htmlspecialchars($item->get_fecha_inicio()) ?>
+                            <?= htmlspecialchars($item->get_start_date()) ?>
                         </div>
                         <div class="grid-cell" data-label="Fecha Fin">
-                            <?= htmlspecialchars($item->get_fecha_fin()) ?>
+                            <?= htmlspecialchars($item->get_end_date()) ?>
                         </div>
                         <div class="grid-cell" data-label="Estado">
                             <span class="badge"><?= htmlspecialchars($estado) ?></span>
                         </div>
                         <div class="grid-cell grid-actions" data-label="Acciones">
                             <a class="btn btn-edit" href="../actions/reservations/formularioReservas.php?id=<?= $item->get_id() ?>">Modificar</a>
-                            <a class="btn btn-delete" href="#">Borrar</a>
+                            <form method="post" action="../actions/reservations/delete_reservations.php" style="display:inline;"
+                                onsubmit="return confirm('¿Seguro que deseas borrar esta reserva?');">
+                                <input type="hidden" name="id" value="<?= (int) $id ?>">
+                                <button type="submit" class="btn btn-delete">Borrar</button>
+                            </form>
                         </div>
                     </div>
                 <?php endforeach; ?>

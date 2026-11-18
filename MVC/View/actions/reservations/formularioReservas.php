@@ -1,14 +1,39 @@
 <?php
+// Reservas
 require "../../../models/entities/reservations.php";
 require "../../../models/mappers/reservations_mappers.php";
 require "../../../models/database/reservations_db_interface.php";
 require "../../../models/database/reservations_db.php";
 require "../../../models/repositories/reservations_repository_interface.php";
 require "../../../models/repositories/reservations_repository.php";
-require "../../../models/config/models_config.php";
 require "../../../controllers/mappers/reservations_mappers.php";
 require "../../../controllers/reservations/reservations_controller_interface.php";
 require "../../../controllers/reservations/reservations_controller.php";
+
+// Clientes
+require "../../../models/entities/clients.php";
+require "../../../models/mappers/clients_mappers.php";
+require "../../../models/database/clients_db_interface.php";
+require "../../../models/database/clients_db.php";
+require "../../../models/repositories/clients_repository_interface.php";
+require "../../../models/repositories/clients_repository.php";
+require "../../../controllers/mappers/clients_mappers.php";
+require "../../../controllers/clients/clients_controller_interface.php";
+require "../../../controllers/clients/clients_controller.php";
+
+// Vehículos
+require "../../../models/entities/vehicles.php";
+require "../../../models/mappers/vehicles_mappers.php";
+require "../../../models/database/vehicles_db_interface.php";
+require "../../../models/database/vehicles_db.php";
+require "../../../models/repositories/vehicles_repository_interface.php";
+require "../../../models/repositories/vehicles_repository.php";
+require "../../../controllers/mappers/vehicles_mappers.php";
+require "../../../controllers/vehicles/vehicles_controller_interface.php";
+require "../../../controllers/vehicles/vehicles_controller.php";
+
+// Configuración (al final, ya con todas las clases cargadas)
+require "../../../models/config/models_config.php";
 require "../../../controllers/config/controllers_config.php";
 
 use app\controllers\config\ControllersConfig;
@@ -26,6 +51,11 @@ $fecha_inicio = "";
 $fecha_fin = "";
 $estado = "";
 
+$clients_controller  = ControllersConfig::get_clients_controller();
+$vehicles_controller = ControllersConfig::get_vehicles_controller();
+$clients  = $clients_controller->get_clients();
+$vehicles = $vehicles_controller->get_vehicles();
+
 if (!empty($id)) {
     $reservation = $controller->get_reservation($id);
     $codigo = $reservation->get_id();
@@ -35,9 +65,6 @@ if (!empty($id)) {
     $fecha_fin = $reservation->get_end_date();
     $estado = $reservation->get_status();
 }
-
-$estado = $_POST['estado'] ?? '';
-
 
 ?>
 
@@ -66,12 +93,26 @@ $estado = $_POST['estado'] ?? '';
 
                 </div>
                 <div>
-                    <label for="cliente_id">Cliente ID: </label>
-                    <input type="text" name="cliente_id" id="cliente_id" value="<?php echo $cliente_id; ?>" required>
-                </div>
-                <div>
-                    <label for="vehiculo_id">Vehículo ID: </label>
-                    <input type="text" name="vehiculo_id" id="vehiculo_id" value="<?php echo $vehiculo_id; ?>" required>
+                   <label for="cliente_id">Cliente:</label>
+    <select name="cliente_id" id="cliente_id" required>
+        <option value="">Seleccionar</option>
+        <?php foreach ($clients as $c): ?>
+            <option value="<?= $c->get_id() ?>" <?= $cliente_id == $c->get_id() ? 'selected' : '' ?>>
+                <?= htmlspecialchars($c->get_name()) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>
+<div>
+    <label for="vehiculo_id">Vehículo:</label>
+    <select name="vehiculo_id" id="vehiculo_id" required>
+        <option value="">Seleccionar</option>
+        <?php foreach ($vehicles as $v): ?>
+            <option value="<?= $v->get_id() ?>" <?= $vehiculo_id == $v->get_id() ? 'selected' : '' ?>>
+                <?= htmlspecialchars($v->get_marca() . ' ' . $v->get_model()) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
                 </div>
                 <div>
                     <label for="fecha_inicio">Fecha de Inicio:</label>

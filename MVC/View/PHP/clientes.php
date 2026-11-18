@@ -115,7 +115,11 @@ $list = $controller->get_clients();
                         </div>
                         <div class="grid-cell grid-actions" data-label="Acciones">
                             <a class="btn btn-edit" href="../actions/clients/formularioClient.php?id=<?= $item->get_id() ?>">Modificar</a>
-                            <a class="btn btn-delete" href="#">Borrar</a>
+                                          <form method="post" action="../actions/clients/delete_clients.php" style="display:inline;"
+                                onsubmit="return confirm('¿Seguro que deseas borrar este cliente? También se eliminarán sus reservas.');">
+                                <input type="hidden" name="id" value="<?= (int) $id ?>">
+                                <button type="submit" class="btn btn-delete">Borrar</button>
+                            </form>
                         </div>
                     </div>
                 <?php endforeach; ?>

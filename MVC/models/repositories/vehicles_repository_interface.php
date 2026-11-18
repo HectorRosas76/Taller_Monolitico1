@@ -10,4 +10,5 @@ interface VehiclesRepositoryInterface
     public function save_new_vehicles(Vehicles $vehicles): bool;
     public function find_vehicles_by_id(int $id): Vehicles|null;
     public function save_vehicles(Vehicles $vehicles): bool;
+    public function delete_vehicles(int $id): bool; 
 }

@@ -10,4 +10,5 @@ interface ClientsRepositoryInterface
     public function save_new_clients(Clients $clients): bool;
     public function find_clients_by_id(int $id): Clients|null;
     public function save_clients(Clients $clients): bool;
-}
+   public function delete_clients(int $id): bool; 
+    }

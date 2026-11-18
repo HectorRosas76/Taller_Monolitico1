@@ -48,4 +48,11 @@ class ClientsController implements ClientsControllerInterface
         $clients = $this->clients_model->save_clients($datos_form);
         return !empty($clients);
     }
+      public function client_delete(int $id): bool
+    {
+        if (empty($id)) {
+            throw new Exception("id incorrecto", 1);
+        }
+        return $this->clients_model->delete_clients($id);
+    }
 }

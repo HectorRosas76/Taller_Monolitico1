@@ -54,5 +54,10 @@ class ClientsRepository implements ClientsRepositoryInterface
         $sql .= " numero_licencia='" . $clients->get_license_number() . "' ";
         $sql .= " where id=" . $clients->get_id();
         return $this->clients_db->exc_query($sql);
+        }
+ public function delete_clients(int $id): bool
+    {
+        $sql = "delete from clientes where id=$id";
+        return $this->clients_db->exc_query($sql);
     }
-}
+        }

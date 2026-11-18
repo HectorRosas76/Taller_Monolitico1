@@ -10,4 +10,6 @@ interface ClientsControllerInterface
     public function client_create(array $post_data): bool;
     public function get_client(int $id): Clients;
     public function client_update(array $post_data): bool;
+
+    public function client_delete(int $id): bool;
 }

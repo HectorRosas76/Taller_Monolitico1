@@ -10,4 +10,5 @@ interface ReservationsRepositoryInterface
     public function save_new_reservations(Reservations $reservations): bool;
     public function find_reservations_by_id(int $id): Reservations|null;
     public function save_reservations(Reservations $reservations): bool;
+    public function delete_reservations(int $id): bool;
 }

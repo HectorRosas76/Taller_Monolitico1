@@ -51,6 +51,6 @@ public static function get_reservations_db(): ReservationsDBInterface
 
 }
 
-const ESTADOS_RESERVA = ['pendiente', 'confirmada', 'cancelada'];
+const ESTADOS_RESERVA = ['activa', 'completada', 'cancelada'];
 
 const ESTADOS_VEHICULO = ['disponible', 'alquilado', 'mantenimiento'];
