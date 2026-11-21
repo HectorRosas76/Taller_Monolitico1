@@ -12,6 +12,7 @@ require "../../controllers/vehicles/vehicles_controller.php";
 
 // Configuración 
 require "../../controllers/config/controllers_config.php";
+require "../../models/config/models_config.php";
 
 use app\controllers\config\ControllersConfig;
 
