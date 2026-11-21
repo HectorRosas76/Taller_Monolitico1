@@ -15,6 +15,15 @@ use app\controllers\config\ControllersConfig;
 
 $controller = ControllersConfig::get_vehicles_controller();
 $list = $controller->get_vehicles();
+
+$search = trim($_GET['search'] ?? '');
+if ($search !== '') {
+    $list = array_filter($list, function ($item) use ($search) {
+        $texto = $item->get_id() . ' ' . $item->get_marca() . ' ' . $item->get_model() . ' '
+            . $item->get_anio() . ' ' . $item->get_categoria() . ' ' . $item->get_estado();
+        return mb_stripos($texto, $search) !== false;
+    });
+}
 ?>
 
 <!DOCTYPE html>
