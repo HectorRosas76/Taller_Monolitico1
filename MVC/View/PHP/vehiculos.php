@@ -1,14 +1,17 @@
 <?php
+// Vehículos
 require "../../models/entities/vehicles.php";
 require "../../models/mappers/vehicles_mappers.php";
 require "../../models/database/vehicles_db_interface.php";
 require "../../models/database/vehicles_db.php";
 require "../../models/repositories/vehicles_repository_interface.php";
 require "../../models/repositories/vehicles_repository.php";
-require "../../models/config/models_config.php";
 require "../../controllers/mappers/vehicles_mappers.php";
 require "../../controllers/vehicles/vehicles_controller_interface.php";
 require "../../controllers/vehicles/vehicles_controller.php";
+
+// Configuración 
+require "../../models/config/models_config.php";
 require "../../controllers/config/controllers_config.php";
 
 use app\controllers\config\ControllersConfig;
@@ -48,7 +51,7 @@ if ($search !== '') {
         </div>
         <div class="menu-item">
             <a href="vehiculos.php">
-                Vehiculos
+                Vehículos
             </a>
         </div>
         <div class="menu-item">
@@ -66,6 +69,11 @@ if ($search !== '') {
                 Disponibilidad
             </a>
         </div>
+        <div class="menu-item">
+            <a href="historial.php">
+                Historial
+            </a>
+        </div>
     </nav>
 
     <div class="page-container">
@@ -77,9 +85,9 @@ if ($search !== '') {
         </section>
 
         <section class="list-controls">
-            <h2>Buscar por nombre</h2>
+            <h2>Buscar vehículo</h2>
             <form method="get" action="" class="search-form">
-                <input type="text" name="search" placeholder="Buscar por marca o modelo..."
+                <input type="text" name="search" placeholder="Buscar por marca, modelo, año, categoría o estado..."
                     value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
@@ -90,7 +98,7 @@ if ($search !== '') {
 
             <div class="grid-wrapper">
                 <!-- Encabezados -->
-                <div class="grid-row grid-head">
+                <div class="grid-row cols-7 grid-head">
                     <div class="grid-cell">Código</div>
                     <div class="grid-cell">Marca</div>
                     <div class="grid-cell">Modelo</div>
@@ -108,7 +116,7 @@ if ($search !== '') {
                     $id = $item->get_id();
                     $estado = $item->get_estado();
                 ?>
-                    <div class="grid-row">
+                    <div class="grid-row cols-7">
                         <div class="grid-cell" data-label="Código">
                             <?= htmlspecialchars($item->get_id()) ?>
                         </div>
@@ -125,14 +133,15 @@ if ($search !== '') {
                             <?= htmlspecialchars($item->get_categoria()) ?>
                         </div>
                         <div class="grid-cell" data-label="Estado">
-                            <span class="badge"><?= htmlspecialchars($estado) ?></span>
+                            <span class="badge badge-<?= htmlspecialchars($estado) ?>"><?= htmlspecialchars($estado) ?></span>
                         </div>
                         <div class="grid-cell grid-actions" data-label="Acciones">
-                            <a class="btn btn-edit" href="../actions/vehicles/formularioVehiculos.php?id=<?= $item->get_id() ?>">Modificar</a>
+                            <a class="btn btn-sm btn-edit" href="../actions/vehicles/formularioVehiculos.php?id=<?= $id ?>">Modificar</a>
+                            <a class="btn btn-sm btn-info" href="historial.php?vehiculo_id=<?= $id ?>">Historial</a>
                                 <form method="post" action="../actions/vehicles/delete_vehicles.php" style="display:inline;"
-                                onsubmit="return confirm('¿Seguro que deseas borrar este vehículo?');">
+                                onsubmit="return confirm('¿Seguro que deseas borrar este vehículo? También se eliminarán sus reservas.');">
                                 <input type="hidden" name="id" value="<?= (int) $id ?>">
-                                <button type="submit" class="btn btn-delete">Borrar</button>
+                                <button type="submit" class="btn btn-sm btn-delete">Borrar</button>
                             </form>
                         </div>
                     </div>

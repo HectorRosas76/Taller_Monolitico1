@@ -56,4 +56,18 @@ class VehiclesController implements VehiclesControllerInterface
         }
         return $this->vehicles_model->delete_vehicles($id);
     }
+
+    //Validar fechas 
+    public function get_available_vehicles(string $start, string $end): array
+    {
+        $d1 = \DateTime::createFromFormat('Y-m-d', $start);
+        $d2 = \DateTime::createFromFormat('Y-m-d', $end);
+        if (!$d1 || !$d2 || $d1->format('Y-m-d') !== $start || $d2->format('Y-m-d') !== $end) {
+            throw new Exception("Las fechas no son válidas.", 3);
+        }
+        if ($end < $start) {
+            throw new Exception("La fecha final no puede ser anterior a la inicial.", 4);
+        }
+        return $this->vehicles_model->get_available_vehicles($start, $end);
+    }
 }

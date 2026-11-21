@@ -32,8 +32,7 @@ require "../../controllers/mappers/vehicles_mappers.php";
 require "../../controllers/vehicles/vehicles_controller_interface.php";
 require "../../controllers/vehicles/vehicles_controller.php";
 
-// Configuración
-require "../../models/config/models_config.php";
+// Configuración 
 require "../../controllers/config/controllers_config.php";
 
 use app\controllers\config\ControllersConfig;
@@ -41,16 +40,27 @@ use app\controllers\config\ControllersConfig;
 $controller = ControllersConfig::get_reservations_controller();
 $list = $controller->get_reservations();
 
-// ID => nombre, para mostrar nombres en lugar de IDs
+// ID => nombre
 $clients_names = [];
 foreach (ControllersConfig::get_clients_controller()->get_clients() as $c) {
     $clients_names[$c->get_id()] = $c->get_name();
 }
-
 $vehicles_names = [];
 foreach (ControllersConfig::get_vehicles_controller()->get_vehicles() as $v) {
     $vehicles_names[$v->get_id()] = $v->get_marca() . ' ' . $v->get_model();
 }
+
+$search = trim($_GET['search'] ?? '');
+if ($search !== '') {
+    $list = array_filter($list, function ($item) use ($search, $clients_names, $vehicles_names) {
+        $texto = $item->get_id() . ' '
+            . ($clients_names[$item->get_client_id()] ?? '') . ' '
+            . ($vehicles_names[$item->get_vehicle_id()] ?? '') . ' '
+            . $item->get_start_date() . ' ' . $item->get_end_date() . ' ' . $item->get_status();
+        return mb_stripos($texto, $search) !== false;
+    });
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -75,7 +85,7 @@ foreach (ControllersConfig::get_vehicles_controller()->get_vehicles() as $v) {
         </div>
         <div class="menu-item">
             <a href="vehiculos.php">
-                Vehiculos
+                Vehículos
             </a>
         </div>
         <div class="menu-item">
@@ -93,6 +103,11 @@ foreach (ControllersConfig::get_vehicles_controller()->get_vehicles() as $v) {
                 Disponibilidad
             </a>
         </div>
+        <div class="menu-item">
+            <a href="historial.php">
+                Historial
+            </a>
+        </div>
     </nav>
 
     <div class="page-container">
@@ -104,9 +119,9 @@ foreach (ControllersConfig::get_vehicles_controller()->get_vehicles() as $v) {
         </section>
 
         <section class="list-controls">
-            <h2>Buscar por nombre</h2>
+            <h2>Buscar reserva</h2>
             <form method="get" action="" class="search-form">
-                <input type="text" name="search" placeholder="Buscar por cliente o vehículo..."
+                <input type="text" name="search" placeholder="Buscar por cliente, vehículo, fecha o estado..."
                     value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
@@ -116,8 +131,7 @@ foreach (ControllersConfig::get_vehicles_controller()->get_vehicles() as $v) {
             <h2>Lista de Reservas</h2>
 
             <div class="grid-wrapper">
-                <!-- Encabezados -->
-                <div class="grid-row grid-head">
+                <div class="grid-row cols-7 grid-head">
                     <div class="grid-cell">Código</div>
                     <div class="grid-cell">Cliente</div>
                     <div class="grid-cell">Vehículo</div>
@@ -135,31 +149,34 @@ foreach (ControllersConfig::get_vehicles_controller()->get_vehicles() as $v) {
                     $id = $item->get_id();
                     $estado = $item->get_status();
                 ?>
-                    <div class="grid-row">
-                        <div class="grid-cell" data-label="Código">
-                            <?= htmlspecialchars($item->get_id()) ?>
-                        </div>
+                    <div class="grid-row cols-7">
+                        <div class="grid-cell" data-label="Código"><?= htmlspecialchars($id) ?></div>
                         <div class="grid-cell" data-label="Cliente">
-    <?= htmlspecialchars($clients_names[$item->get_client_id()] ?? 'ID ' . $item->get_client_id()) ?>
-</div>
-<div class="grid-cell" data-label="Vehículo">
-    <?= htmlspecialchars($vehicles_names[$item->get_vehicle_id()] ?? 'ID ' . $item->get_vehicle_id()) ?>
-</div>
-                        <div class="grid-cell" data-label="Fecha Inicio">
-                            <?= htmlspecialchars($item->get_start_date()) ?>
+                            <?= htmlspecialchars($clients_names[$item->get_client_id()] ?? 'ID ' . $item->get_client_id()) ?>
                         </div>
-                        <div class="grid-cell" data-label="Fecha Fin">
-                            <?= htmlspecialchars($item->get_end_date()) ?>
+                        <div class="grid-cell" data-label="Vehículo">
+                            <?= htmlspecialchars($vehicles_names[$item->get_vehicle_id()] ?? 'ID ' . $item->get_vehicle_id()) ?>
                         </div>
+                        <div class="grid-cell" data-label="Fecha Inicio"><?= htmlspecialchars($item->get_start_date()) ?></div>
+                        <div class="grid-cell" data-label="Fecha Fin"><?= htmlspecialchars($item->get_end_date()) ?></div>
                         <div class="grid-cell" data-label="Estado">
-                            <span class="badge"><?= htmlspecialchars($estado) ?></span>
+                            <span class="badge badge-<?= htmlspecialchars($estado) ?>"><?= htmlspecialchars($estado) ?></span>
                         </div>
                         <div class="grid-cell grid-actions" data-label="Acciones">
-                            <a class="btn btn-edit" href="../actions/reservations/formularioReservas.php?id=<?= $item->get_id() ?>">Modificar</a>
-                            <form method="post" action="../actions/reservations/delete_reservations.php" style="display:inline;"
+                            <a class="btn btn-sm btn-edit" href="../actions/reservations/formularioReservas.php?id=<?= $id ?>">Modificar</a>
+
+                            <?php if ($estado === 'activa'): ?>
+                                <form method="post" action="../actions/reservations/return_reservations.php"
+                                    onsubmit="return confirm('¿Registrar la devolución de este vehículo?');">
+                                    <input type="hidden" name="id" value="<?= (int) $id ?>">
+                                    <button type="submit" class="btn btn-sm btn-success">Devolver</button>
+                                </form>
+                            <?php endif; ?>
+
+                            <form method="post" action="../actions/reservations/delete_reservations.php"
                                 onsubmit="return confirm('¿Seguro que deseas borrar esta reserva?');">
                                 <input type="hidden" name="id" value="<?= (int) $id ?>">
-                                <button type="submit" class="btn btn-delete">Borrar</button>
+                                <button type="submit" class="btn btn-sm btn-delete">Borrar</button>
                             </form>
                         </div>
                     </div>

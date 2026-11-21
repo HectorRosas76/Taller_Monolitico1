@@ -3,6 +3,7 @@
 namespace app\models\database;
 
 use mysqli;
+use mysqli_sql_exception;
 
 class Clients_DB implements ClientsDBInterface
 {
@@ -12,7 +13,7 @@ class Clients_DB implements ClientsDBInterface
     private string $name_db = "alquiler_vehiculos_db";
     private int $port_db = 3306;
 
-    private $conex = null;
+    private ?mysqli $conex = null;
 
     public function __construct()
     {
@@ -27,8 +28,10 @@ class Clients_DB implements ClientsDBInterface
             print($this->conex->connect_error);
             die();
         }
+        $this->conex->set_charset("utf8mb4");
     }
 
+    // La conexión queda abierta mientras exista el objeto se cierra en __destruct.
     public function exc_select($sql): array
     {
         $result = $this->conex->query($sql);
@@ -36,14 +39,23 @@ class Clients_DB implements ClientsDBInterface
         while ($row = $result->fetch_assoc()) {
             array_push($rows, $row);
         }
-        $this->conex->close();
         return $rows;
     }
 
     public function exc_query($sql): bool
     {
-        $result = $this->conex->query($sql);
-        $this->conex->close();
-        return $result;
+        try {
+            return (bool) $this->conex->query($sql);
+        } catch (mysqli_sql_exception $e) {
+            error_log("[Clients_DB] " . $e->getMessage() . " | SQL: " . $sql);
+            return false;
+        }
+    }
+
+    public function __destruct()
+    {
+        if ($this->conex instanceof mysqli) {
+            @$this->conex->close();
+        }
     }
 }

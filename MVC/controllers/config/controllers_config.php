@@ -25,6 +25,9 @@ class ControllersConfig
 
     public static function get_reservations_controller(): ReservationsControllerInterface
     {
-        return new ReservationsController(ModelsConfig::get_reservations_repository());
+        return new ReservationsController(
+            ModelsConfig::get_reservations_repository(),
+            ModelsConfig::get_vehicles_repository()
+        );
     }
 }

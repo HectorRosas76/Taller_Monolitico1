@@ -61,4 +61,57 @@ class ReservationsRepository implements ReservationsRepositoryInterface
         $sql = "delete from reservas where id=$id";
         return $this->reservations_db->exc_query($sql);
     }
+
+    public function get_reservations_by_client(int $client_id): array
+    {
+        $sql = "select * from reservas where cliente_id=$client_id order by fecha_inicio desc, id desc";
+        return $this->rows_to_entities($this->reservations_db->exc_select($sql));
+    }
+
+    public function get_reservations_by_vehicle(int $vehicle_id): array
+    {
+        $sql = "select * from reservas where vehiculo_id=$vehicle_id order by fecha_inicio desc, id desc";
+        return $this->rows_to_entities($this->reservations_db->exc_select($sql));
+    }
+
+    // ¿Existe otra reserva ACTIVA del mismo vehículo?
+    public function has_conflict(int $vehicle_id, string $start, string $end, int $exclude_id = 0): bool
+    {
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $start) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $end)) {
+            return true; // fechas inválidas
+        }
+        $sql = "select count(*) as total from reservas";
+        $sql .= " where vehiculo_id=$vehicle_id and estado='activa' and id<>$exclude_id";
+        $sql .= " and fecha_inicio<='$end' and fecha_fin>='$start'";
+        $rows = $this->reservations_db->exc_select($sql);
+        return ((int) ($rows[0]['total'] ?? 0)) > 0;
+    }
+
+    // ¿El vehículo tiene hoy una reserva?
+    public function has_active_today(int $vehicle_id): bool
+    {
+        $sql = "select count(*) as total from reservas";
+        $sql .= " where vehiculo_id=$vehicle_id and estado='activa'";
+        $sql .= " and curdate() between fecha_inicio and fecha_fin";
+        $rows = $this->reservations_db->exc_select($sql);
+        return ((int) ($rows[0]['total'] ?? 0)) > 0;
+    }
+
+    public function set_status(int $id, string $status): bool
+    {
+        if (!in_array($status, ['activa', 'completada', 'cancelada'], true)) {
+            return false;
+        }
+        $sql = "update reservas set estado='$status' where id=$id";
+        return $this->reservations_db->exc_query($sql);
+    }
+
+    private function rows_to_entities(array $rows_db): array
+    {
+        $list = [];
+        foreach ($rows_db as $item) {
+            array_push($list, ReservationsMappers::to_entity($item));
+        }
+        return $list;
+    }
 }

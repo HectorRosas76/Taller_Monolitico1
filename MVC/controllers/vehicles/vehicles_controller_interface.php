@@ -12,4 +12,5 @@ interface VehiclesControllerInterface
     public function vehicle_update(array $post_data): bool;
 
     public function vehicle_delete(int $id): bool;
+    public function get_available_vehicles(string $start, string $end): array;
 }
