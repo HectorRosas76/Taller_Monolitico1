@@ -3,7 +3,7 @@
   height: 100px;
   margin: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(6, 1fr);
   gap: 5px;
   background-color: #fdfdfd;
   position: sticky;
@@ -46,7 +46,7 @@
   object-fit: contain;
 }
 
-/* Detalle decorativo debajo de los enlaces del menú */
+/* Detalle decorativo */
 .menu-item:not(.logo) a::after {
   content: "";
   position: absolute;

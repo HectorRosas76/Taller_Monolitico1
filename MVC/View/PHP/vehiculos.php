@@ -1,20 +1,32 @@
 <?php
+// Vehículos
 require "../../models/entities/vehicles.php";
 require "../../models/mappers/vehicles_mappers.php";
 require "../../models/database/vehicles_db_interface.php";
 require "../../models/database/vehicles_db.php";
 require "../../models/repositories/vehicles_repository_interface.php";
 require "../../models/repositories/vehicles_repository.php";
-require "../../models/config/models_config.php";
 require "../../controllers/mappers/vehicles_mappers.php";
 require "../../controllers/vehicles/vehicles_controller_interface.php";
 require "../../controllers/vehicles/vehicles_controller.php";
+
+// Configuración 
+require "../../models/config/models_config.php";
 require "../../controllers/config/controllers_config.php";
 
 use app\controllers\config\ControllersConfig;
 
 $controller = ControllersConfig::get_vehicles_controller();
 $list = $controller->get_vehicles();
+
+$search = trim($_GET['search'] ?? '');
+if ($search !== '') {
+    $list = array_filter($list, function ($item) use ($search) {
+        $texto = $item->get_id() . ' ' . $item->get_marca() . ' ' . $item->get_model() . ' '
+            . $item->get_anio() . ' ' . $item->get_categoria() . ' ' . $item->get_estado();
+        return mb_stripos($texto, $search) !== false;
+    });
+}
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +51,7 @@ $list = $controller->get_vehicles();
         </div>
         <div class="menu-item">
             <a href="vehiculos.php">
-                Vehiculos
+                Vehículos
             </a>
         </div>
         <div class="menu-item">
@@ -57,6 +69,11 @@ $list = $controller->get_vehicles();
                 Disponibilidad
             </a>
         </div>
+        <div class="menu-item">
+            <a href="historial.php">
+                Historial
+            </a>
+        </div>
     </nav>
 
     <div class="page-container">
@@ -68,9 +85,9 @@ $list = $controller->get_vehicles();
         </section>
 
         <section class="list-controls">
-            <h2>Buscar por nombre</h2>
+            <h2>Buscar vehículo</h2>
             <form method="get" action="" class="search-form">
-                <input type="text" name="search" placeholder="Buscar por marca o modelo..."
+                <input type="text" name="search" placeholder="Buscar por marca, modelo, año, categoría o estado..."
                     value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
@@ -81,7 +98,7 @@ $list = $controller->get_vehicles();
 
             <div class="grid-wrapper">
                 <!-- Encabezados -->
-                <div class="grid-row grid-head">
+                <div class="grid-row cols-7 grid-head">
                     <div class="grid-cell">Código</div>
                     <div class="grid-cell">Marca</div>
                     <div class="grid-cell">Modelo</div>
@@ -99,7 +116,7 @@ $list = $controller->get_vehicles();
                     $id = $item->get_id();
                     $estado = $item->get_estado();
                 ?>
-                    <div class="grid-row">
+                    <div class="grid-row cols-7">
                         <div class="grid-cell" data-label="Código">
                             <?= htmlspecialchars($item->get_id()) ?>
                         </div>
@@ -116,11 +133,16 @@ $list = $controller->get_vehicles();
                             <?= htmlspecialchars($item->get_categoria()) ?>
                         </div>
                         <div class="grid-cell" data-label="Estado">
-                            <span class="badge"><?= htmlspecialchars($estado) ?></span>
+                            <span class="badge badge-<?= htmlspecialchars($estado) ?>"><?= htmlspecialchars($estado) ?></span>
                         </div>
                         <div class="grid-cell grid-actions" data-label="Acciones">
-                            <a class="btn btn-edit" href="../actions/vehicles/formularioVehiculos.php?id=<?= $item->get_id() ?>">Modificar</a>
-                            <a class="btn btn-delete" href="#">Borrar</a>
+                            <a class="btn btn-sm btn-edit" href="../actions/vehicles/formularioVehiculos.php?id=<?= $id ?>">Modificar</a>
+                            <a class="btn btn-sm btn-info" href="historial.php?vehiculo_id=<?= $id ?>">Historial</a>
+                                <form method="post" action="../actions/vehicles/delete_vehicles.php" style="display:inline;"
+                                onsubmit="return confirm('¿Seguro que deseas borrar este vehículo? También se eliminarán sus reservas.');">
+                                <input type="hidden" name="id" value="<?= (int) $id ?>">
+                                <button type="submit" class="btn btn-sm btn-delete">Borrar</button>
+                            </form>
                         </div>
                     </div>
                 <?php endforeach; ?>

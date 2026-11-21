@@ -56,4 +56,38 @@ class VehiclesRepository implements VehiclesRepositoryInterface
         $sql .= " where id=" . $vehicles->get_id();
         return $this->vehicles_db->exc_query($sql);
     }
+         public function delete_vehicles(int $id): bool
+    {
+        $sql = "delete from vehiculos where id=$id";
+        return $this->vehicles_db->exc_query($sql);
+    }
+
+    // Vehículos que se pueden reservar entre $start y $end (formato Y-m-d):
+    public function get_available_vehicles(string $start, string $end): array
+    {
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $start) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $end)) {
+            return [];
+        }
+        $sql = "select v.* from vehiculos v";
+        $sql .= " where v.estado <> 'mantenimiento'";
+        $sql .= " and not (v.estado = 'alquilado' and curdate() between '$start' and '$end')";
+        $sql .= " and v.id not in (select r.vehiculo_id from reservas r";
+        $sql .= "   where r.estado = 'activa' and r.fecha_inicio <= '$end' and r.fecha_fin >= '$start')";
+        $sql .= " order by v.marca, v.modelo";
+        $rows_db = $this->vehicles_db->exc_select($sql);
+        $vehicles = [];
+        foreach ($rows_db as $item) {
+            array_push($vehicles, VehiclesMappers::to_entity($item));
+        }
+        return $vehicles;
+    }
+
+    public function set_vehicle_status(int $id, string $status): bool
+    {
+        if (!in_array($status, ['disponible', 'alquilado', 'mantenimiento'], true)) {
+            return false;
+        }
+        $sql = "update vehiculos set estado='$status' where id=$id";
+        return $this->vehicles_db->exc_query($sql);
+    }
 }

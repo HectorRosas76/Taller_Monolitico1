@@ -39,6 +39,11 @@
         Disponibilidad
       </a>
     </div>
+    <div class="menu-item">
+      <a href="#historial">
+        Historial
+      </a>
+    </div>
   </nav>
   <main class="main-page">
     <div class="hero">
@@ -65,6 +70,10 @@
       <a id="disponibilidad" class="menu-card" href="disponibilidad.php">
         <h2>Ver Disponibilidad</h2>
         <p>Consulta la disponibilidad de vehículos en cualquier momento.</p>
+      </a>
+      <a id="historial" class="menu-card" href="historial.php">
+        <h2>Historial de Alquileres</h2>
+        <p>Revisa todos los alquileres de un cliente o de un vehículo.</p>
       </a>
     </div>
   </main>
